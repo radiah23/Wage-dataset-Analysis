@@ -1,0 +1,347 @@
+---
+title: "Wage Datasets Analysis Code File"
+author: "Radiah Khan"
+format: html
+editor: visual
+---
+
+## Loading Packages
+
+```{r}
+library(openintro)
+library(tidyverse)
+library(ggplot2)
+```
+
+## The top university majors for men and women
+
+```{r}
+view(jobs_gender)
+```
+
+## Top university majors for women
+
+```{r}
+top_majors_of_jobs_female <- jobs_gender |>
+  select(major_category, workers_female) |>
+  unique() |>
+  group_by(major_category) |>
+  summarize(count = n()) |>
+  arrange(desc(count))
+top_majors_of_jobs_female
+```
+
+## Distribution of Job Majors for Women
+
+```{r}
+ggplot(data = top_majors_of_jobs_female,
+       aes(x = major_category,
+           y = count)) +
+  geom_col(fill = "Blue") +
+  labs(title = "Distribution of female job holders by college majors",
+       x = "Major Category",
+       y = "Count") +
+ 
+  coord_flip()
+```
+
+## Top university majors for Men
+
+```{r}
+top_majors_of_jobs_male <- jobs_gender |>
+  select(major_category, workers_male) |>
+  unique() |>
+  group_by(major_category) |>
+  summarize(count = n()) |>
+  arrange(desc(count))
+top_majors_of_jobs_male
+```
+
+## Distribution of Job Majors for Men
+
+```{r}
+ggplot(data = top_majors_of_jobs_male,
+       aes(x = major_category,
+           y = count)) +
+  geom_col(fill = "Red") +
+  labs(title = "Distribution of male job holders by college majors",
+       x = "Major Category",
+       y = "Count") +
+ 
+  coord_flip()
+```
+
+## Comparing two data frame
+
+```{r}
+dat1 <- top_majors_of_jobs_female 
+dat2 <- top_majors_of_jobs_male
+summary(comparedf(dat1,dat2))
+print(summary(comparedf(dat1,dat2)))
+```
+
+## Combining two data frames
+
+```{r}
+combined_inner <- merge(dat1, dat2, by = "major_category")
+combined_inner
+```
+
+## Renaming columns
+
+```{r}
+
+colnames(combined_inner)[colnames(combined_inner) == "count.x"] <- "Female Count"
+```
+
+```{r}
+
+colnames(combined_inner)[colnames(combined_inner) == "count.y"] <- "Male Count"
+```
+
+## Tidy Data
+
+```{r}
+combined_inner_pivoted <- combined_inner %>%
+  pivot_longer(cols = ends_with("Count"),
+               names_to = "count_type",
+               values_to = "value")
+```
+
+## Plotting the combined pivoted data
+
+```{r}
+
+ggplot(data = combined_inner_pivoted,
+       aes(x = major_category,
+           y = value)) +
+  facet_grid(count_type ~ .)+ 
+  geom_col(width = 0.5, fill = "red")+
+  labs(title = "Comparison of female and male participation in different job fields based on their majors",
+       x = "Major Category",
+       y = "Total Count")+
+  scale_x_discrete()+
+  coord_flip() 
+        
+```
+
+```{r}
+
+jobs_by_gender <- jobs_gender |>
+  mutate(percent_male = (workers_male/total_workers)*100)
+
+```
+
+## Data Wrangling
+
+```{r}
+
+jobs_by_gender_selected <- jobs_by_gender |> 
+  select(year, major_category, total_earnings_male, total_earnings_female, percent_male, percent_female, total_earnings_female, total_earnings_male)
+  
+```
+
+## Tidy Data
+
+```{r}
+
+jobs_by_gender_by_pivoted <- jobs_by_gender_selected |>
+pivot_longer(cols = c("total_earnings_male", "total_earnings_female", "percent_male", "percent_female"),
+             names_to = "category",
+             values_to = "total_value")
+
+```
+
+# Data Wrangling
+
+```{r}
+
+jobs_by_gender_cleaned_total <- jobs_by_gender_by_pivoted |>
+  filter(category %in% c("total_earnings_male", "total_earnings_female"))
+
+```
+
+```{r}
+library(ggplot2)
+library(ggthemes)  
+library(RColorBrewer)
+```
+
+## Converting year to a factor to set the continuous to discrete scale
+
+```{r}
+jobs_by_gender_cleaned_total$year <- as.factor(jobs_by_gender_cleaned_total$year)
+
+```
+
+```{r}
+graph1 <- ggplot(data = jobs_by_gender_cleaned_total, 
+                  aes(x = major_category, y = total_value, color = year)) + 
+  geom_point(size = 3 ) + 
+  facet_wrap(~category) + 
+  labs(title = "Comparison of Earnings of Females and Males in Different Majors",
+       x = "Major Category",
+       y = "Total Earnings") +
+  coord_flip() + 
+    scale_color_manual(values = c("black", "red", "blue", "green"))
+
+print(graph1)
+
+```
+
+## Determining age group
+
+```{r }
+earnings_female |>
+  select(group) |>
+  unique()
+print(earnings_female)
+```
+
+## Renaming age groups by combining them
+
+```{r}
+
+plot_data <- combined |> 
+  mutate(broad_group = case_when(
+    group %in% c("16-19 years", "20-24 years", "25-34 years") ~ "Age_group_A_16-34",
+    group %in% c("35-44 years", "45-54 years", "55-64 years") ~ "Age_group_B_35-64",
+    TRUE ~ NA
+  )) |> 
+  filter(!is.na(broad_group))
+  plot_data
+```
+
+## Plotting different age group of women's data
+
+```{r}
+plot_data |>
+group_by(year, broad_group) |>
+ggplot(aes(x = year, y = percent, color = broad_group)) +
+geom_line() +
+  labs(title = "Earnings of Women Across Different Age Groups Over the Years",
+       x = "Year",
+       y = "Percentage")
+scale_color_brewer(palette = "Dark2")
+plot_data
+  
+```
+
+```{r}
+
+plot_data_filtered_1 <- plot_data |>
+  select(year, part_time_female, part_time_male)
+```
+
+```{r}
+
+ggplot(plot_data_filtered_1, aes(x = year, y = part_time_female)) +
+  geom_line(color = "black", size = 1) +  
+  geom_point(color = "red", size = 3) +  
+  labs(title = "Percentage of Part-Time Female Jobs Over the Years",
+       x = "Year",
+       y = "Percentage") +
+  theme_minimal()
+```
+
+```{r}
+
+ggplot(plot_data_filtered_1, aes(x = year, y = part_time_male)) +
+  geom_line(color = "black", size = 1) +  
+  geom_point(color = "red", size = 3) +  
+  labs(title = "Percentage of Part-Time Male Jobs Over the Years",
+       x = "Year",
+       y = "Percentage") +
+  theme_minimal()
+         
+```
+
+##Data Wrangling
+
+```{r}
+plot_data_filtered_2 <- plot_data |>
+  select(year, full_time_female, full_time_male)
+```
+
+## Plotting
+
+```{r}
+
+ggplot(plot_data_filtered_2, aes(x = year, y = full_time_female)) +
+  geom_line(color = "black", size = 1) +  
+  geom_point(color = "blue", size = 3) +  
+  labs(title = "Percentage of Full-Time Female Jobs Over the Years",
+       x = "Year",
+       y = "Percentage") +
+  theme_minimal()
+```
+
+```{r}
+
+ggplot(plot_data_filtered_2, aes(x = year, y = full_time_male)) +
+  geom_line(color = "black", size = 1) +  
+  geom_point(color = "blue", size = 3) +  
+  labs(title = "Percentage of Full-Time Male Jobs Over the Years",
+       x = "Year",
+       y = "Percentage") +
+  theme_minimal()
+```
+
+## Black_White_Wage_Gap
+
+```{r}
+
+view(black_white_wage_gap)
+```
+
+```{r}
+
+black_white_women_wage_gap <- black_white_wage_gap |>
+  select(year, black_women_average, white_women_average)
+```
+
+```{r}
+
+black_white_men_wage_gap <- black_white_wage_gap |>
+  select(year, black_men_average, white_men_average)
+```
+
+## Multiple line in one plot
+
+```{r}
+p1 <- ggplot(data = black_white_women_wage_gap, aes(x = year)) +
+  geom_line(aes(y = black_women_average, color = "Average Wage Of Black Women")) +
+  geom_point(aes(y = black_women_average, color = "Average Wage Of Black Women")) +
+  geom_line(aes(y = white_women_average, color = "Average Wage of White Women")) +
+  geom_point(aes(y = white_women_average, color = "Average Wage of White Women")) +
+  theme_classic() +
+  scale_colour_manual(name = "Variables", 
+                      values = c("Average Wage Of Black Women" = "blue", 
+                                 "Average Wage of White Women" = "red")) +
+  labs(title = "Comparison of Wages Over The Years for Black and White Women",
+       x = "Years",
+       y = "Average Wage")
+
+p1
+
+```
+
+```{r}
+
+p2 <- ggplot(data = black_white_men_wage_gap, aes(x = year)) +
+  geom_line(aes(y = black_men_average, color = "Average Wage Of Black Men")) +
+  geom_point(aes(y = black_men_average, color = "Average Wage Of Black Men")) +
+  geom_line(aes(y = white_men_average, color = "Average Wage of White Men")) +
+  geom_point(aes(y = white_men_average, color = "Average Wage of White Men")) +
+  theme_classic() +
+  scale_colour_manual(name = "Variables", 
+                      values = c("Average Wage Of Black Men" = "blue", 
+                                 "Average Wage of White Men" = "red")) +
+  labs(
+       x = "Years",
+       y = "Average Wage")
+
+p2
+
+
+```

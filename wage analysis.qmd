@@ -168,7 +168,7 @@ library(ggthemes)
 library(RColorBrewer)
 ```
 
-## Converting year to a factor to set the continuous to discrete scale
+## Converting year to a factor to set the continuous to discrete scale (Plot 4- Slide 6)
 
 ```{r}
 jobs_by_gender_cleaned_total$year <- as.factor(jobs_by_gender_cleaned_total$year)
@@ -190,7 +190,7 @@ print(graph1)
 
 ```
 
-## Determining age group
+## Determining age group (Plot 5- Slide 8)
 
 ```{r }
 earnings_female |>
@@ -235,6 +235,7 @@ plot_data_filtered_1 <- plot_data |>
 ```
 
 ## (Plot 7- Slide 10)
+
 ```{r}
 
 ggplot(plot_data_filtered_1, aes(x = year, y = part_time_female)) +
@@ -247,6 +248,7 @@ ggplot(plot_data_filtered_1, aes(x = year, y = part_time_female)) +
 ```
 
 ## (Plot 8- Slide 11)
+
 ```{r}
 
 ggplot(plot_data_filtered_1, aes(x = year, y = part_time_male)) +
@@ -267,6 +269,7 @@ plot_data_filtered_2 <- plot_data |>
 ```
 
 ## Plotting (Plot 9- Slide 12)
+
 ```{r}
 
 ggplot(plot_data_filtered_2, aes(x = year, y = full_time_female)) +
@@ -279,6 +282,7 @@ ggplot(plot_data_filtered_2, aes(x = year, y = full_time_female)) +
 ```
 
 ## (Plot 10- Slide 13)
+
 ```{r}
 
 ggplot(plot_data_filtered_2, aes(x = year, y = full_time_male)) +
@@ -309,7 +313,7 @@ black_white_men_wage_gap <- black_white_wage_gap |>
   select(year, black_men_average, white_men_average)
 ```
 
-## Multiple line in one plot  (Plot 11- Slide 14)
+## Multiple line in one plot (Plot 11- Slide 14)
 
 ```{r}
 p1 <- ggplot(data = black_white_women_wage_gap, aes(x = year)) +
@@ -330,6 +334,7 @@ p1
 ```
 
 ## (Plot 12- Slide 15)
+
 ```{r}
 
 p2 <- ggplot(data = black_white_men_wage_gap, aes(x = year)) +

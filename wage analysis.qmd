@@ -11,6 +11,7 @@ editor: visual
 library(openintro)
 library(tidyverse)
 library(ggplot2)
+library(arsenal)
 ```
 
 ## The top university majors for men and women
@@ -31,7 +32,7 @@ top_majors_of_jobs_female <- jobs_gender |>
 top_majors_of_jobs_female
 ```
 
-## Distribution of Job Majors for Women
+## Distribution of Job Majors for Women (Plot 2- Slide 3)
 
 ```{r}
 ggplot(data = top_majors_of_jobs_female,
@@ -57,7 +58,7 @@ top_majors_of_jobs_male <- jobs_gender |>
 top_majors_of_jobs_male
 ```
 
-## Distribution of Job Majors for Men
+## Distribution of Job Majors for Men (Plot 1 - Slide 2)
 
 ```{r}
 ggplot(data = top_majors_of_jobs_male,
@@ -108,7 +109,7 @@ combined_inner_pivoted <- combined_inner %>%
                values_to = "value")
 ```
 
-## Plotting the combined pivoted data
+## Plotting the combined pivoted data (Plot 3 - Slide 5)
 
 ```{r}
 
@@ -212,7 +213,7 @@ plot_data <- combined |>
   plot_data
 ```
 
-## Plotting different age group of women's data
+## Plotting different age group of women's data (Plot 6- Slide 9)
 
 ```{r}
 plot_data |>
@@ -233,6 +234,7 @@ plot_data_filtered_1 <- plot_data |>
   select(year, part_time_female, part_time_male)
 ```
 
+## (Plot 7- Slide 10)
 ```{r}
 
 ggplot(plot_data_filtered_1, aes(x = year, y = part_time_female)) +
@@ -244,6 +246,7 @@ ggplot(plot_data_filtered_1, aes(x = year, y = part_time_female)) +
   theme_minimal()
 ```
 
+## (Plot 8- Slide 11)
 ```{r}
 
 ggplot(plot_data_filtered_1, aes(x = year, y = part_time_male)) +
@@ -263,8 +266,7 @@ plot_data_filtered_2 <- plot_data |>
   select(year, full_time_female, full_time_male)
 ```
 
-## Plotting
-
+## Plotting (Plot 9- Slide 12)
 ```{r}
 
 ggplot(plot_data_filtered_2, aes(x = year, y = full_time_female)) +
@@ -276,6 +278,7 @@ ggplot(plot_data_filtered_2, aes(x = year, y = full_time_female)) +
   theme_minimal()
 ```
 
+## (Plot 10- Slide 13)
 ```{r}
 
 ggplot(plot_data_filtered_2, aes(x = year, y = full_time_male)) +
@@ -306,7 +309,7 @@ black_white_men_wage_gap <- black_white_wage_gap |>
   select(year, black_men_average, white_men_average)
 ```
 
-## Multiple line in one plot
+## Multiple line in one plot  (Plot 11- Slide 14)
 
 ```{r}
 p1 <- ggplot(data = black_white_women_wage_gap, aes(x = year)) +
@@ -326,6 +329,7 @@ p1
 
 ```
 
+## (Plot 12- Slide 15)
 ```{r}
 
 p2 <- ggplot(data = black_white_men_wage_gap, aes(x = year)) +
